@@ -18,16 +18,6 @@ body {
   width: 100%;
   height: 100%;
 }
-#app #console {
-  display: block;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  opacity: 0.5;
-  background: #fff;
-  padding: 0.5em;
-}
 #app table.puzzle {
   border-collapse: collapse;
   border-spacing: 0;
@@ -75,7 +65,7 @@ body {
 #app table.puzzle td.blue {
   background: #6cf;
 }
-#app table.puzzle td.orange {
+#app table.puzzle td.gold {
   background: #fc3;
 }
 #app table.puzzle td.empty {
@@ -85,5 +75,15 @@ body {
   background: #000;
 }
 #app table.puzzle td.crossed {
-  background: #c33;
+  background: #aaa url("../img/cross.png") no-repeat center;
+  background-size: contain;
+}
+#app table.puzzle.small .non-header,
+#app table.puzzle.small .row-header,
+#app table.puzzle.small .col-header {
+  display: none;
+}
+#app table.puzzle.small td {
+  width: 0.5em;
+  height: 0.5em;
 }

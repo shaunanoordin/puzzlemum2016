@@ -22,7 +22,7 @@ var GREY = 'grey';
 var PINK = 'pink';
 var GREEN = 'green';
 var BLUE = 'blue';
-var ORANGE = 'orange';
+var GOLD = 'gold';
 var EMPTY_VALUE = WHITE;
 var RENDER_SMALL = 0;
 var RENDER_FULL = 1;
@@ -36,12 +36,7 @@ var App = function () {
     _classCallCheck(this, App);
 
     //--------------------------------
-    //App.FRAMES_PER_SECOND = 1;
-    //--------------------------------
-
-    //--------------------------------
     this.init();
-    //this.runCycle = setInterval(this.run.bind(this), 1000 / App.FRAMES_PER_SECOND);
     //--------------------------------
   }
 
@@ -51,20 +46,25 @@ var App = function () {
     key: 'init',
     value: function init() {
       this.container = document.getElementById('app');
-      this.console = document.getElementById('console');
 
       this.cursorMode = CURSOR_PEN;
 
-      this.puzzles = [new Puzzle(this, [[WHITE, WHITE, WHITE, BLUE, BLUE, BLUE, WHITE, BLUE, BLUE, BLUE], [WHITE, BLUE, BLUE, WHITE, WHITE, WHITE, BLUE, WHITE, WHITE, WHITE], [BLUE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, WHITE, GREY], [BLUE, WHITE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, GREY, GREY, WHITE, GREY, GREY], [WHITE, BLUE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE], [BLUE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, GREY, WHITE, WHITE, GREY, GREY]])];
+      this.puzzle = new Puzzle(this, [[WHITE, WHITE, PINK, PINK, PINK, PINK, WHITE, WHITE, WHITE, PINK, PINK, PINK, PINK, WHITE, WHITE], [GOLD, PINK, GOLD, PINK, BLUE, PINK, GOLD, GOLD, GOLD, BLUE, BLUE, BLUE, GOLD, PINK, GOLD], [GOLD, GOLD, GOLD, BLUE, WHITE, BLUE, GOLD, WHITE, GOLD, BLUE, WHITE, BLUE, GOLD, GOLD, GOLD], [GOLD, PINK, GOLD, BLUE, BLUE, BLUE, GOLD, GOLD, PINK, BLUE, BLUE, PINK, PINK, GOLD, PINK], [GOLD, PINK, GOLD, BLUE, PINK, BLUE, GOLD, PINK, PINK, BLUE, PINK, PINK, PINK, GOLD, PINK], [PINK, PINK, PINK, GOLD, GOLD, GOLD, BLUE, BLUE, PINK, PINK, GOLD, PINK, BLUE, PINK, BLUE], [PINK, PINK, PINK, GOLD, WHITE, GOLD, BLUE, WHITE, BLUE, GOLD, WHITE, GOLD, BLUE, BLUE, BLUE], [PINK, PINK, PINK, GOLD, GOLD, PINK, BLUE, WHITE, BLUE, GOLD, GOLD, GOLD, PINK, BLUE, PINK], [WHITE, PINK, PINK, GOLD, WHITE, GOLD, BLUE, BLUE, PINK, GOLD, PINK, GOLD, PINK, BLUE, WHITE], [WHITE, WHITE, PINK, GOLD, GOLD, GOLD, PINK, PINK, PINK, PINK, PINK, PINK, PINK, WHITE, WHITE], [GREEN, GREEN, WHITE, GREEN, GREEN, PINK, GREEN, PINK, GREEN, PINK, GREEN, GREEN, WHITE, GREEN, GREEN], [GREEN, WHITE, GREEN, WHITE, GREEN, PINK, GREEN, PINK, GREEN, PINK, GREEN, WHITE, GREEN, WHITE, GREEN], [GREEN, WHITE, WHITE, WHITE, GREEN, PINK, GREEN, PINK, GREEN, PINK, GREEN, WHITE, WHITE, WHITE, GREEN], [GREEN, WHITE, WHITE, WHITE, GREEN, WHITE, GREEN, GREEN, GREEN, WHITE, GREEN, WHITE, WHITE, WHITE, GREEN], [WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, PINK, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE]]);
+      /*new Puzzle(this, [
+        [WHITE, WHITE, WHITE, BLUE,  BLUE,  BLUE,  WHITE, BLUE,  BLUE,  BLUE, ],
+        [WHITE, BLUE,  BLUE,  PINK,  PINK,  PINK,  BLUE,  PINK,  PINK,  PINK, ],
+        [BLUE,  PINK,  PINK,  WHITE, WHITE, WHITE, PINK,  WHITE, WHITE, WHITE,],
+        [BLUE,  PINK,  WHITE, GOLD,  GREY,  GOLD,  GREY,  WHITE, GOLD,  GREY, ],
+        [BLUE,  PINK,  WHITE, GOLD,  GREY,  GOLD,  GREY,  GOLD,  GREY,  GOLD,],
+        [BLUE,  PINK,  WHITE, GOLD,  GOLD,  GOLD,  GREY,  GOLD,  GOLD,  GOLD, ],
+        [WHITE, BLUE,  PINK,  GOLD,  GREY,  GOLD,  GREY,  GOLD,  GREY,  GOLD, ],
+        [BLUE,  PINK,  PINK,  GOLD,  GREY,  GOLD,  GREY,  GOLD,  GREY,  GOLD, ],
+        [BLUE,  PINK,  WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,],
+        [BLUE,  PINK,  WHITE, GOLD,  GOLD,  GREY,  WHITE, GOLD,  GOLD,  GOLD,],
+      ]);*/
 
-      this.container.appendChild(this.puzzles[0].html);
+      this.container.appendChild(this.puzzle.html);
     }
-
-    //----------------------------------------------------------------
-
-  }, {
-    key: 'run',
-    value: function run() {}
   }]);
 
   return App;
@@ -82,7 +82,7 @@ var Puzzle = function () {
 
     this.app = app;
     this.html = document.createElement("table");
-    this.html.className = "puzzle";
+    this.renderMode = RENDER_FULL;
 
     this.cells = [];
     this.colHeaderHtml = [];
@@ -193,7 +193,7 @@ var Puzzle = function () {
       for (var row = 0; row < this.cells.length; row++) {
         for (var col = 0; col < this.cells[row].length; col++) {
           //TODO this.cells[row][col].;
-          if (this.cells[row][col].playerAnswer == CELL_EMPTY && this.cells[row][col].correctAnswer == EMPTY_VALUE || this.cells[row][col].playerAnswer != CELL_EMPTY && this.cells[row][col].correctAnswer != EMPTY_VALUE) {
+          if ((this.cells[row][col].playerAnswer == CELL_EMPTY || this.cells[row][col].playerAnswer == CELL_CROSSED) && this.cells[row][col].correctAnswer == EMPTY_VALUE || this.cells[row][col].playerAnswer == CELL_FILLED && this.cells[row][col].correctAnswer != EMPTY_VALUE) {
             //Do nothing
           } else {
               allAnswersCorrect = false;
@@ -205,7 +205,12 @@ var Puzzle = function () {
   }, {
     key: 'paint',
     value: function paint() {
-      console.log("PAINT");
+      if (this.renderMode == RENDER_SMALL) {
+        this.html.className = "puzzle small";
+      } else {
+        this.html.className = "puzzle";
+      }
+
       var answersCorrect = this.verifyAnswers();
       for (var row = 0; row < this.cells.length; row++) {
         for (var col = 0; col < this.cells[row].length; col++) {
@@ -241,12 +246,19 @@ var Cell = function Cell(puzzle, value, x, y) {
   this.html = document.createElement("td");
   this.html.className = "cell";
   this.html.onclick = function () {
-    if (_this.playerAnswer != CELL_EMPTY) {
-      _this.playerAnswer = CELL_EMPTY;
-    } else {
-      _this.playerAnswer = CELL_FILLED;
+    if (_this.puzzle.renderMode == RENDER_SMALL) {
+      _this.puzzle.renderMode = RENDER_FULL;
+      _this.puzzle.paint();
+      return;
     }
-    console.log(_this.playerAnswer);
+
+    if (_this.playerAnswer == CELL_EMPTY) {
+      _this.playerAnswer = CELL_FILLED;
+    } else if (_this.playerAnswer == CELL_FILLED) {
+      _this.playerAnswer = CELL_CROSSED;
+    } else {
+      _this.playerAnswer = CELL_EMPTY;
+    }
     _this.puzzle.paint();
   };
 };
