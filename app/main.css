@@ -29,7 +29,6 @@ body {
   padding: 0.5em;
 }
 #app table.puzzle {
-  border: 10px solid #fff;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -42,5 +41,33 @@ body {
 #app table.puzzle td {
   border: 1px solid #fff;
   padding: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+#app table.puzzle td.white {
+  background: #fff;
+}
+#app table.puzzle td.grey {
+  background: #666;
+}
+#app table.puzzle td.pink {
+  background: #f99;
+}
+#app table.puzzle td.green {
+  background: #6c9;
+}
+#app table.puzzle td.blue {
+  background: #6cf;
+}
+#app table.puzzle td.orange {
+  background: #fc3;
+}
+#app table.puzzle td.empty {
+  background: #ccc;
+}
+#app table.puzzle td.filled {
+  background: #000;
+}
+#app table.puzzle td.crossed {
   background: #c33;
 }

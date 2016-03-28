@@ -12,15 +12,18 @@ Puzzle Mum 2016 - Puzzle games for my mother
 ********************************************************************************
  */
 
-var CELL_EMPTY = '';
+var CELL_EMPTY = 'empty';
 var CELL_FILLED = 'filled';
 var CELL_CROSSED = 'crossed';
-var WHITE = '#ffffff';
-var GREY = '#666666';
-var PINK = '#ff9999';
-var GREEN = '#66cc99';
-var BLUE = '#66ccff';
-var ORANGE = '#ffcc33';
+var CURSOR_PEN = 0;
+var CURSOR_X = 1;
+var WHITE = 'white';
+var GREY = 'grey';
+var PINK = 'pink';
+var GREEN = 'green';
+var BLUE = 'blue';
+var ORANGE = 'orange';
+var EMPTY_VALUE = WHITE;
 var RENDER_SMALL = 0;
 var RENDER_FULL = 1;
 
@@ -50,11 +53,11 @@ var App = function () {
       this.container = document.getElementById('app');
       this.console = document.getElementById('console');
 
-      this.puzzles = [new Puzzle(this, [[WHITE, WHITE, WHITE, BLUE, BLUE, BLUE, WHITE, BLUE, BLUE, BLUE], [WHITE, BLUE, BLUE, WHITE, WHITE, WHITE, BLUE, WHITE, WHITE, WHITE]])];
+      this.cursorMode = CURSOR_PEN;
+
+      this.puzzles = [new Puzzle(this, [[WHITE, WHITE, WHITE, BLUE, BLUE, BLUE, WHITE, BLUE, BLUE, BLUE], [WHITE, BLUE, BLUE, WHITE, WHITE, WHITE, BLUE, WHITE, WHITE, WHITE], [BLUE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, WHITE, GREY], [BLUE, WHITE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, GREY, GREY, WHITE, GREY, GREY], [WHITE, BLUE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE], [BLUE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE], [BLUE, WHITE, WHITE, WHITE, GREY, GREY, WHITE, WHITE, GREY, GREY]])];
 
       this.container.appendChild(this.puzzles[0].html);
-
-      alert(this.console);
     }
 
     //----------------------------------------------------------------
@@ -95,7 +98,6 @@ var Puzzle = function () {
       }
       this.cells.push(newRow);
     }
-    console.log(this.cells);
     //--------------------------------
 
     //Create the HTML renders
@@ -128,11 +130,43 @@ var Puzzle = function () {
       this.html.appendChild(_newRow2);
     }
     //--------------------------------
+
+    //--------------------------------
+    this.paint();
+    //--------------------------------
   }
 
   _createClass(Puzzle, [{
     key: 'verifyAnswers',
-    value: function verifyAnswers() {}
+    value: function verifyAnswers() {
+      var allAnswersCorrect = true;
+      for (var row = 0; row < this.cells.length; row++) {
+        for (var col = 0; col < this.cells[row].length; col++) {
+          //TODO this.cells[row][col].;
+          if (this.cells[row][col].playerAnswer == CELL_EMPTY && this.cells[row][col].correctAnswer == EMPTY_VALUE || this.cells[row][col].playerAnswer != CELL_EMPTY && this.cells[row][col].correctAnswer != EMPTY_VALUE) {
+            //Do nothing
+          } else {
+              allAnswersCorrect = false;
+            }
+        }
+      }
+      return allAnswersCorrect;
+    }
+  }, {
+    key: 'paint',
+    value: function paint() {
+      console.log("PAINT");
+      var answersCorrect = this.verifyAnswers();
+      for (var row = 0; row < this.cells.length; row++) {
+        for (var col = 0; col < this.cells[row].length; col++) {
+          if (answersCorrect) {
+            this.cells[row][col].html.className = this.cells[row][col].correctAnswer;
+          } else {
+            this.cells[row][col].html.className = this.cells[row][col].playerAnswer;
+          }
+        }
+      }
+    }
   }]);
 
   return Puzzle;
@@ -157,7 +191,13 @@ var Cell = function Cell(puzzle, value, x, y) {
   this.html = document.createElement("td");
   this.html.className = "cell";
   this.html.onclick = function () {
-    alert(_this.x + "," + _this.y + ":" + _this.correctAnswer);
+    if (_this.playerAnswer != CELL_EMPTY) {
+      _this.playerAnswer = CELL_EMPTY;
+    } else {
+      _this.playerAnswer = CELL_FILLED;
+    }
+    console.log(_this.playerAnswer);
+    _this.puzzle.paint();
   };
 };
 //==============================================================================

@@ -6,15 +6,18 @@ Puzzle Mum 2016 - Puzzle games for my mother
 ********************************************************************************
  */
 
-const CELL_EMPTY = '';
+const CELL_EMPTY = 'empty';
 const CELL_FILLED = 'filled';
 const CELL_CROSSED = 'crossed';
-const WHITE = '#ffffff';
-const GREY = '#666666';
-const PINK = '#ff9999';
-const GREEN = '#66cc99';
-const BLUE = '#66ccff';
-const ORANGE = '#ffcc33';
+const CURSOR_PEN = 0;
+const CURSOR_X = 1;
+const WHITE = 'white';
+const GREY = 'grey';
+const PINK = 'pink';
+const GREEN = 'green';
+const BLUE = 'blue';
+const ORANGE = 'orange';
+const EMPTY_VALUE = WHITE;
 const RENDER_SMALL = 0;
 const RENDER_FULL = 1;
  
@@ -40,16 +43,24 @@ class App {
     this.container = document.getElementById('app');
     this.console = document.getElementById('console');
     
+    this.cursorMode = CURSOR_PEN;
+    
     this.puzzles = [
       new Puzzle(this, [
-        [WHITE, WHITE, WHITE, BLUE,  BLUE,  BLUE,  WHITE, BLUE,  BLUE,  BLUE ],
-        [WHITE, BLUE,  BLUE,  WHITE, WHITE, WHITE, BLUE,  WHITE, WHITE, WHITE],
+        [WHITE, WHITE, WHITE, BLUE,  BLUE,  BLUE,  WHITE, BLUE,  BLUE,  BLUE, ],
+        [WHITE, BLUE,  BLUE,  WHITE, WHITE, WHITE, BLUE,  WHITE, WHITE, WHITE,],
+        [BLUE,  WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,],
+        [BLUE,  WHITE, WHITE, WHITE, GREY,  WHITE, GREY,  WHITE, WHITE, GREY, ],
+        [BLUE,  WHITE, WHITE, WHITE, GREY,  WHITE, GREY,  WHITE, GREY,  WHITE,],
+        [BLUE,  WHITE, WHITE, WHITE, GREY,  GREY,  GREY,  WHITE, GREY,  GREY, ],
+        [WHITE, BLUE,  WHITE, WHITE, GREY,  WHITE, GREY,  WHITE, GREY,  WHITE,],
+        [BLUE,  WHITE, WHITE, WHITE, GREY,  WHITE, GREY,  WHITE, GREY,  WHITE,],
+        [BLUE,  WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,],
+        [BLUE,  WHITE, WHITE, WHITE, GREY,  GREY,  WHITE, WHITE, GREY,  GREY, ],
       ])
     ];
     
     this.container.appendChild(this.puzzles[0].html);
-    
-    alert(this.console);
   }
   
   //----------------------------------------------------------------
@@ -83,7 +94,6 @@ class Puzzle {
       }
       this.cells.push(newRow);
     }
-    console.log(this.cells);
     //--------------------------------
     
     //Create the HTML renders
@@ -116,10 +126,42 @@ class Puzzle {
       this.html.appendChild(newRow);
     }
     //--------------------------------
+    
+    //--------------------------------
+    this.paint();
+    //--------------------------------
   }
   
   verifyAnswers() {
-    
+    let allAnswersCorrect = true;
+    for (let row = 0; row < this.cells.length; row++) {
+      for (let col = 0; col < this.cells[row].length; col++) {
+        //TODO this.cells[row][col].;
+        if ((this.cells[row][col].playerAnswer == CELL_EMPTY &&
+             this.cells[row][col].correctAnswer == EMPTY_VALUE) ||
+            (this.cells[row][col].playerAnswer != CELL_EMPTY &&
+             this.cells[row][col].correctAnswer != EMPTY_VALUE)) {
+          //Do nothing
+        } else {
+          allAnswersCorrect = false;
+        }
+      }
+    }
+    return allAnswersCorrect;
+  }
+  
+  paint() {
+    console.log("PAINT");
+    let answersCorrect = this.verifyAnswers();
+    for (let row = 0; row < this.cells.length; row++) {      
+      for (let col = 0; col < this.cells[row].length; col++) {
+        if (answersCorrect) {
+          this.cells[row][col].html.className = this.cells[row][col].correctAnswer;
+        } else {
+          this.cells[row][col].html.className = this.cells[row][col].playerAnswer;
+        }
+      }
+    }
   }
 }
 //==============================================================================
@@ -137,7 +179,13 @@ class Cell {
     this.html = document.createElement("td");
     this.html.className = "cell";
     this.html.onclick = () => {
-      alert(this.x + "," + this.y + ":" + this.correctAnswer);
+      if (this.playerAnswer != CELL_EMPTY) {
+        this.playerAnswer = CELL_EMPTY;
+      } else {
+        this.playerAnswer = CELL_FILLED;
+      }
+      console.log(this.playerAnswer);
+      this.puzzle.paint();
     };
   }
 }
