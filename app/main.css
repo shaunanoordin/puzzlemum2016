@@ -28,3 +28,19 @@ body {
   background: #fff;
   padding: 0.5em;
 }
+#app table.puzzle {
+  border: 10px solid #fff;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+#app table.puzzle .non-header,
+#app table.puzzle .row-header,
+#app table.puzzle .col-header {
+  background: #ccc;
+  display: none;
+}
+#app table.puzzle td {
+  border: 1px solid #fff;
+  padding: 10px;
+  background: #c33;
+}
