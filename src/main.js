@@ -84,6 +84,9 @@ class Puzzle {
     this.colHeaderHtml = [];
     this.rowHeaderHtml = [];
     
+    let width = 0;
+    let height = 0;
+    
     //Construct the cell array
     //--------------------------------
     for (let row = 0; row < correctAnswer.length; row++) {
@@ -93,7 +96,9 @@ class Puzzle {
         newRow.push(newCell);
       }
       this.cells.push(newRow);
+      width = correctAnswer[row].length;
     }
+    height = correctAnswer.length;
     //--------------------------------
     
     //Create the HTML renders
@@ -124,6 +129,51 @@ class Puzzle {
       }
       
       this.html.appendChild(newRow);
+    }
+    //--------------------------------
+    
+    //Update headers
+    //--------------------------------
+    for (let col = 0; col < width; col++) {
+      let values = [0];
+      let lastCell = CELL_EMPTY;
+      for (let row = 0; row < height; row++) {
+        if (this.cells[row][col].correctAnswer == EMPTY_VALUE) {
+          if (values[values.length-1] > 0 ) {
+            values.push(0);
+          }
+        } else {
+          values[values.length-1]++;
+        }
+      }
+      let html = "";
+      for (let i = 0; i < values.length; i++) {
+        if (i == 0 || (i > 0 && values[i] > 0)) {
+          html += "<span>"+values[i]+"</span>";
+        }
+      }
+      this.colHeaderHtml[col].innerHTML = html;
+    }
+    
+    for (let row = 0; row < height; row++) {
+      let values = [0];
+      let lastCell = CELL_EMPTY;
+      for (let col = 0; col < width; col++) {
+        if (this.cells[row][col].correctAnswer == EMPTY_VALUE) {
+          if (values[values.length-1] > 0 ) {
+            values.push(0);
+          }
+        } else {
+          values[values.length-1]++;
+        }
+      }
+      let html = "";
+      for (let i = 0; i < values.length; i++) {
+        if (i == 0 || (i > 0 && values[i] > 0)) {
+          html += "<span>"+values[i]+"</span>";
+        }
+      }
+      this.rowHeaderHtml[row].innerHTML = html;
     }
     //--------------------------------
     

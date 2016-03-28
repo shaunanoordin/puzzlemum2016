@@ -36,9 +36,25 @@ body {
 #app table.puzzle .row-header,
 #app table.puzzle .col-header {
   background: #ccc;
-  display: none;
+}
+#app table.puzzle .col-header {
+  vertical-align: bottom;
+}
+#app table.puzzle .col-header span {
+  display: block;
+  margin-top: 0.5em;
+}
+#app table.puzzle .row-header {
+  text-align: right;
+}
+#app table.puzzle .row-header span {
+  margin-left: 0.5em;
 }
 #app table.puzzle td {
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  overflow: hidden;
   border: 1px solid #fff;
   padding: 10px;
   background: #fff;

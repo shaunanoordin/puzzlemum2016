@@ -88,6 +88,9 @@ var Puzzle = function () {
     this.colHeaderHtml = [];
     this.rowHeaderHtml = [];
 
+    var width = 0;
+    var height = 0;
+
     //Construct the cell array
     //--------------------------------
     for (var row = 0; row < correctAnswer.length; row++) {
@@ -97,7 +100,9 @@ var Puzzle = function () {
         newRow.push(newCell);
       }
       this.cells.push(newRow);
+      width = correctAnswer[row].length;
     }
+    height = correctAnswer.length;
     //--------------------------------
 
     //Create the HTML renders
@@ -128,6 +133,51 @@ var Puzzle = function () {
       }
 
       this.html.appendChild(_newRow2);
+    }
+    //--------------------------------
+
+    //Update headers
+    //--------------------------------
+    for (var _col3 = 0; _col3 < width; _col3++) {
+      var values = [0];
+      var lastCell = CELL_EMPTY;
+      for (var _row2 = 0; _row2 < height; _row2++) {
+        if (this.cells[_row2][_col3].correctAnswer == EMPTY_VALUE) {
+          if (values[values.length - 1] > 0) {
+            values.push(0);
+          }
+        } else {
+          values[values.length - 1]++;
+        }
+      }
+      var html = "";
+      for (var i = 0; i < values.length; i++) {
+        if (i == 0 || i > 0 && values[i] > 0) {
+          html += "<span>" + values[i] + "</span>";
+        }
+      }
+      this.colHeaderHtml[_col3].innerHTML = html;
+    }
+
+    for (var _row3 = 0; _row3 < height; _row3++) {
+      var _values = [0];
+      var _lastCell = CELL_EMPTY;
+      for (var _col4 = 0; _col4 < width; _col4++) {
+        if (this.cells[_row3][_col4].correctAnswer == EMPTY_VALUE) {
+          if (_values[_values.length - 1] > 0) {
+            _values.push(0);
+          }
+        } else {
+          _values[_values.length - 1]++;
+        }
+      }
+      var _html = "";
+      for (var _i = 0; _i < _values.length; _i++) {
+        if (_i == 0 || _i > 0 && _values[_i] > 0) {
+          _html += "<span>" + _values[_i] + "</span>";
+        }
+      }
+      this.rowHeaderHtml[_row3].innerHTML = _html;
     }
     //--------------------------------
 
